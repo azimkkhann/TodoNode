@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const fs = require("fs")
+const fs = require("fs").promises
 const app = express();
 
 app.use(express.urlencoded({extended : true}))
@@ -13,14 +13,15 @@ app.get("/", (req, res)=>{
 
 
 
-app.post("/", (req, res) =>{
+app.post("/", async (req, res) =>{
     let content = req.body;
-    let data = fs.readFileSync("todolist1.json", "utf-8");
+    let data = await fs.readFile("todolist1.json", "utf-8");
     data = JSON.parse(data);
     data.push(content);
     data = JSON.stringify(data);
     console.log(data);
-    fs.writeFileSync("todolist1.json", data);
+    await fs.writeFile("todolist1.json", data);
+    res.send("Successfully entered!")
 })
 
 
@@ -60,6 +61,8 @@ app.delete("/:id", function(req, res){
     console.log(data)
 
 })
+
+
 
 
 app.listen(3000)
